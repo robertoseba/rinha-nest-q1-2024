@@ -1,18 +1,15 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { CustomLoggerModule } from './infra/custom-logger/custom-logger.module';
 import { ConfigModule } from '@nestjs/config';
+import { CustomerModule } from './app/customer/customer.module';
 
 @Module({
   imports: [
     CustomLoggerModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env'],
     }),
+    CustomerModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
