@@ -6,8 +6,8 @@ import {
   TTransactionReturn,
   inputTransactionSchema,
 } from './type/transaction.type';
-import { ZodValidationPipe } from '../../infra/custom-logger/pipes/zod.pipe';
-import { CustomerValidationPipe } from '../../infra/custom-logger/pipes/customer.pipe';
+import { ZodValidationPipe } from '../../infra/pipes/zod.pipe';
+import { CustomerValidationPipe } from '../../infra/pipes/customer.pipe';
 
 @Controller()
 export class CustomerController {
