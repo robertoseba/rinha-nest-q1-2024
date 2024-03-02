@@ -15,33 +15,20 @@ import {
   inputTransactionSchema,
 } from './type/transaction.type';
 import { ZodValidationPipe } from '../../infra/custom-logger/pipes/zod.pipe';
+import { CustomerValidationPipe } from '../../infra/custom-logger/pipes/customer.pipe';
 
 @Controller()
 export class CustomerController {
   constructor(private readonly service: CustomerService) {}
 
   @Get('/clientes/:id/extrato')
-  getStatement(
-    @Param(
-      'id',
-      new ParseIntPipe({
-        errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-      }),
-    )
-    id: number,
-  ): TStatement {
+  getStatement(@Param('id', CustomerValidationPipe) id: number): TStatement {
     return this.service.getStatement(id);
   }
 
   @Post('/clientes/:id/transacoes')
   createTransaction(
-    @Param(
-      'id',
-      new ParseIntPipe({
-        errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-      }),
-    )
-    id: number,
+    @Param('id', CustomerValidationPipe) id: number,
     @Body(new ZodValidationPipe(inputTransactionSchema))
     transaction: TInputTransaction,
   ): TTransactionReturn {
