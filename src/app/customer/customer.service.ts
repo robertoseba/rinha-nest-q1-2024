@@ -5,7 +5,6 @@ import {
   TTransaction,
   TTransactionReturn,
 } from './type/transaction.type';
-import { error } from 'console';
 
 @Injectable()
 export class CustomerService {
@@ -33,6 +32,6 @@ export class CustomerService {
     customerId: string,
     transaction: TInputTransaction,
   ): TTransactionReturn {
-    new error('Not implemented');
+    throw new Error('Not implemented');
   }
 }

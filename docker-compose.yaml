@@ -1,17 +1,18 @@
 version: '3.8'
 
 services:
-  api01: &api
-    image: robertoseba/rinha_nest
+  api01: &api # image: robertoseba/rinha_nest
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev
     hostname: api01
     environment:
       - DB_HOSTNAME=db
       - DB_NAME=rinha
-      - POSTGRES_PASSWORD=123
-      - POSTGRES_USER=admin
-      # - DB_INITIAL_POOL_SIZE=15
-      # - DB_MAX_POOL_SIZE=15
-      # - API_USE_DB_FUNC=true
+      - DB_PASSWORD=123
+      - DB_USER=admin
+      - DB_POOL_SIZE=15
+      - DB_PORT=5432
       - PORT=3000
     ports:
       - '3001:3000'
@@ -24,7 +25,7 @@ services:
           cpus: '0.55'
           memory: '125MB'
 
-    command: ['npm', 'run', 'start:prod']
+    # command: ['npm', 'run', 'start:debug']
 
   api02:
     <<: *api
@@ -56,8 +57,8 @@ services:
       - POSTGRES_DB=rinha
     ports:
       - '5432:5432'
-    volumes:
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    # volumes:
+    # - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     # command: postgres -c checkpoint_timeout=600 -c max_wal_size=4096 -c synchronous_commit=0
     deploy:
       resources:
