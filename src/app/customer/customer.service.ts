@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { TStatement } from './type/statement.type';
-import { TTransaction } from './type/transaction.type';
 import {
   CUSTOMER_REPOSITORY,
   ICustomerRepository,

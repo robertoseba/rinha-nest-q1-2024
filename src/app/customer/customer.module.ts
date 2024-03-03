@@ -7,9 +7,10 @@ import { CustomerRepositorySql } from '../../infra/repository/sql/customer.repos
 import { CUSTOMER_REPOSITORY } from './repository/customer.repository';
 import { TRANSACTION_REPOSITORY } from './repository/transaction.respository';
 import { TransactionRepositorySql } from '../../infra/repository/sql/transaction.repository';
+import { Transaction } from './entity/transaction.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Customer])],
+  imports: [TypeOrmModule.forFeature([Customer, Transaction])],
   controllers: [CustomerController],
   providers: [
     CustomerService,
