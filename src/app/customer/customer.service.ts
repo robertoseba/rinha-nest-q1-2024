@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { TStatement } from './type/statement.type';
-import { TTransaction } from './type/transaction.type';
+import {
+  TInputTransaction,
+  TTransaction,
+  TTransactionReturn,
+} from './type/transaction.type';
+import { error } from 'console';
 
 @Injectable()
 export class CustomerService {
@@ -22,5 +27,12 @@ export class CustomerService {
     };
 
     return statement;
+  }
+
+  makeTransaction(
+    customerId: string,
+    transaction: TInputTransaction,
+  ): TTransactionReturn {
+    new error('Not implemented');
   }
 }
