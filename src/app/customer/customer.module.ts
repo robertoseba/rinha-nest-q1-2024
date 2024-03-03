@@ -4,7 +4,9 @@ import { CustomerService } from './customer.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Customer } from './entity/customer.entity';
 import { CustomerRepositorySql } from '../../infra/repository/sql/customer.repository';
-import { CUSTOMER_REPOSITORY } from './customer.repository';
+import { CUSTOMER_REPOSITORY } from './repository/customer.repository';
+import { TRANSACTION_REPOSITORY } from './repository/transaction.respository';
+import { TransactionRepositorySql } from '../../infra/repository/sql/transaction.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Customer])],
@@ -14,6 +16,10 @@ import { CUSTOMER_REPOSITORY } from './customer.repository';
     {
       provide: CUSTOMER_REPOSITORY,
       useClass: CustomerRepositorySql,
+    },
+    {
+      provide: TRANSACTION_REPOSITORY,
+      useClass: TransactionRepositorySql,
     },
   ],
 })
