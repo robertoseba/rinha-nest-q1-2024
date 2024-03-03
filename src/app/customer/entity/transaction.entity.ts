@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { Customer } from './customer.entity';
 
-export enum TransactionType {
+export enum TransactionTypeEnum {
   CREDIT = 'c',
   DEBIT = 'd',
 }
@@ -28,8 +28,8 @@ export class Transaction {
   @Column({ type: 'integer', nullable: false })
   value: number;
 
-  @Column({ type: 'enum', enum: TransactionType, nullable: false })
-  type: TransactionType;
+  @Column({ type: 'enum', enum: TransactionTypeEnum, nullable: false })
+  type: TransactionTypeEnum;
 
   @Column({ type: 'varchar', length: 10, nullable: false })
   description: string;

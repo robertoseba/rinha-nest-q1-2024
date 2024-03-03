@@ -1,13 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { TStatement } from './type/statement.type';
+import { TTransaction } from './type/transaction.type';
 import {
-  TInputTransaction,
-  TTransaction,
-  TTransactionReturn,
-} from './type/transaction.type';
+  CUSTOMER_REPOSITORY,
+  ICustomerRepository,
+} from './customer.repository';
 
 @Injectable()
 export class CustomerService {
+  constructor(
+    @Inject(CUSTOMER_REPOSITORY)
+    private readonly repository: ICustomerRepository,
+  ) {}
+
   getStatement(id: number): TStatement {
     const transaction: TTransaction = {
       valor: 1000,
@@ -31,7 +36,7 @@ export class CustomerService {
   makeTransaction(
     customerId: string,
     transaction: TInputTransaction,
-  ): TTransactionReturn {
+  ): TOuputTransaction {
     throw new Error('Not implemented');
   }
 }

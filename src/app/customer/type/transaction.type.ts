@@ -1,11 +1,10 @@
 import { z } from 'zod';
-
-const transactionType = ['c', 'd'] as const;
+import { TransactionTypeEnum } from '../entity/transaction.entity';
 
 const transactionSchema = z
   .object({
     valor: z.number().positive(),
-    tipo: z.enum(transactionType),
+    tipo: z.enum([TransactionTypeEnum.CREDIT, TransactionTypeEnum.DEBIT]),
     descricao: z.string(),
     realizada_em: z.date(),
   })
@@ -19,7 +18,7 @@ export const inputTransactionSchema = transactionSchema.omit({
 
 export type TInputTransaction = z.infer<typeof inputTransactionSchema>;
 
-export type TTransactionReturn = {
+export type TOuputTransaction = {
   limite: number;
   saldo: number;
 };

@@ -1,5 +1,7 @@
 import { TStatement } from './type/statement.type';
-import { TInputTransaction, TTransactionReturn } from './type/transaction.type';
+import { TInputTransaction, TOuputTransaction } from './type/transaction.type';
+
+export const CUSTOMER_REPOSITORY = Symbol('ICustomerRepository');
 
 export interface ICustomerRepository {
   getStatement(id: number): TStatement;
@@ -7,5 +9,5 @@ export interface ICustomerRepository {
   makeTransaction(
     id: number,
     transaction: TInputTransaction,
-  ): TTransactionReturn;
+  ): TOuputTransaction;
 }

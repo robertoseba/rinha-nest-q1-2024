@@ -4,8 +4,10 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   Relation,
+  OneToOne,
 } from 'typeorm';
 import { Transaction } from './transaction.entity';
+import { Balance } from './balance.entity';
 
 @Entity({ name: 'customers' })
 export class Customer {
@@ -20,4 +22,7 @@ export class Customer {
 
   @OneToMany(() => Transaction, (transaction) => transaction.customer)
   transactions: Relation<Transaction>[];
+
+  @OneToOne(() => Balance, (balance) => balance.balance)
+  balance: Relation<Balance>;
 }

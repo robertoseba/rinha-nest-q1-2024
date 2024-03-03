@@ -3,7 +3,7 @@ import { CustomerService } from './customer.service';
 import { TStatement } from './type/statement.type';
 import {
   TInputTransaction,
-  TTransactionReturn,
+  TOuputTransaction,
   inputTransactionSchema,
 } from './type/transaction.type';
 import { ZodValidationPipe } from '../../infra/pipes/zod-validation.pipe';
@@ -23,7 +23,7 @@ export class CustomerController {
     @Param('id', CustomerValidationPipe) id: number,
     @Body(new ZodValidationPipe(inputTransactionSchema))
     transaction: TInputTransaction,
-  ): TTransactionReturn {
+  ): TOuputTransaction {
     return { limite: 1, saldo: 1 };
   }
 }
