@@ -10,7 +10,7 @@ export const dbDatasource: DataSourceOptions = {
   username: process.env['DB_USER'],
   password: process.env['DB_PASSWORD'],
   database: process.env['DB_NAME'],
-  entities: [`${__dirname}/../../**/*.entity.{js,ts}`],
+  entities: ['dist/**/*.entity.js'],
   poolSize: parseInt(process.env['DB_POOL_SIZE'] ?? '10'),
   logging: false,
   synchronize: false,
