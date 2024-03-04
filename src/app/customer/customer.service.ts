@@ -8,6 +8,7 @@ import {
   ITransactionRepository,
   TRANSACTION_REPOSITORY,
 } from './repository/transaction.respository';
+import { TInputTransaction, TOuputTransaction } from './type/transaction.type';
 
 @Injectable()
 export class CustomerService {
@@ -26,6 +27,9 @@ export class CustomerService {
     customerId: number,
     transaction: TInputTransaction,
   ): TOuputTransaction {
-    return this.transactionRepository.create(customerId, transaction);
+    return this.transactionRepository.createTransaction(
+      customerId,
+      transaction,
+    );
   }
 }
