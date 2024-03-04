@@ -16,7 +16,7 @@ export const dbDatasource: DataSourceOptions = {
   synchronize: false,
   migrations: ['dist/infra/db/migrations/*.js'],
   migrationsTableName: 'typeorm_migrations',
-  migrationsRun: process.env['NODE_ENV'] !== 'production',
+  migrationsRun: true,
 };
 
 const dataSource = new DataSource(dbDatasource);
