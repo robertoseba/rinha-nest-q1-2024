@@ -20,9 +20,13 @@ export class Customer {
   @Column({ type: 'integer', default: 0, nullable: false })
   limit: number;
 
-  @OneToMany(() => Transaction, (transaction) => transaction.customer)
+  @OneToMany(() => Transaction, (transaction) => transaction.customer, {
+    nullable: true,
+  })
   transactions: Relation<Transaction>[];
 
-  @OneToOne(() => Balance, (balance) => balance.balance)
+  @OneToOne(() => Balance, (balance) => balance.balance, {
+    nullable: true,
+  })
   balance: Relation<Balance>;
 }

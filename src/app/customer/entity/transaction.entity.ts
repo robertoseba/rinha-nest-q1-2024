@@ -14,7 +14,7 @@ export enum TransactionTypeEnum {
   DEBIT = 'd',
 }
 
-@Entity()
+@Entity({ name: 'transactions' })
 export class Transaction {
   @PrimaryGeneratedColumn('increment')
   id: number;

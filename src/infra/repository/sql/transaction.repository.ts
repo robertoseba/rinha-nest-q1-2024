@@ -18,7 +18,10 @@ export class TransactionRepositorySql
   ) {
     super(repo.target, repo.manager, repo.queryRunner);
   }
-  create(id: number, transaction: TInputTransaction): TOuputTransaction {
+  createTransaction(
+    id: number,
+    transaction: TInputTransaction,
+  ): TOuputTransaction {
     throw new Error('Method not implemented.');
   }
 }
