@@ -23,8 +23,6 @@ services:
           cpus: '0.55'
           memory: '125MB'
 
-    # command: ['npm', 'run', 'start:debug']
-
   api02:
     <<: *api
     hostname: api02
