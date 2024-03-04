@@ -14,7 +14,7 @@ export const dbDatasource: DataSourceOptions = {
   poolSize: parseInt(process.env['DB_POOL_SIZE'] ?? '10'),
   logging: false,
   synchronize: false,
-  migrations: ['./migrations/**/*.{js,ts}'],
+  migrations: ['dist/infra/db/migrations/*.js'],
   migrationsTableName: 'typeorm_migrations',
   migrationsRun: process.env['NODE_ENV'] !== 'production',
 };
