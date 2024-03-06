@@ -1,4 +1,3 @@
-import { Customer } from '../entity/customer.entity';
 import { Transaction } from '../entity/transaction.entity';
 import { TInputTransaction, TOuputTransaction } from '../type/transaction.type';
 
@@ -10,5 +9,5 @@ export interface ITransactionRepository {
     transaction: TInputTransaction,
   ): TOuputTransaction;
 
-  getLastTransactionsBy(customer: Customer): Promise<Transaction[]>;
+  getLastTransactionsBy(customerId: number): Promise<Transaction[]>;
 }

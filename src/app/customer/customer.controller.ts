@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  NotFoundException,
-  Param,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { TStatement } from './type/statement.type';
 import {
@@ -24,13 +17,7 @@ export class CustomerController {
   async getStatement(
     @Param('id', CustomerValidationPipe) id: number,
   ): Promise<TStatement> {
-    const statement = await this.service.getStatement(id);
-
-    if (!statement) {
-      throw new NotFoundException('Cliente não encontrado!');
-    }
-
-    return statement;
+    return await this.service.getStatement(id);
   }
 
   @Post('/clientes/:id/transacoes')

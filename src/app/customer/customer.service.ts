@@ -23,14 +23,14 @@ export class CustomerService {
     private readonly transactionRepository: ITransactionRepository,
   ) {}
 
-  async getStatement(id: number): Promise<TStatement | null> {
+  async getStatement(id: number): Promise<TStatement> {
     const customer = await this.customerRepository.getStatement(id);
     if (!customer) {
       throw new NotFoundException('Cliente não encontrado!');
     }
 
     const lastTransactions =
-      await this.transactionRepository.getLastTransactionsBy(customer);
+      await this.transactionRepository.getLastTransactionsBy(id);
 
     const returnTransactions: TTransaction[] = lastTransactions.map(
       (transaction) => {
@@ -42,6 +42,7 @@ export class CustomerService {
         };
       },
     );
+
     return {
       saldo: {
         total: customer.balance.balance,

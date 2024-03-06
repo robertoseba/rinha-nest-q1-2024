@@ -26,11 +26,14 @@ export class TransactionRepositorySql
     throw new Error('Method not implemented.');
   }
 
-  async getLastTransactionsBy(customer: Customer): Promise<Transaction[]> {
-    return await this.find({
-      where: { customer: customer },
-      order: { createdAt: 'desc' },
-      take: 10,
-    });
+  async getLastTransactionsBy(customerId: number): Promise<Transaction[]> {
+    return await this.createQueryBuilder()
+      .where({ customer: { id: customerId } })
+      .take(10)
+      .orderBy({ created_at: 'DESC' })
+      .getMany();
+    // `SELECT * FROM transactions WHERE customer_id = ? ORDER BY created_at DESC LIMIT 10;`,
+    // [customer.id],
+    // );
   }
 }
