@@ -7,7 +7,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Transaction } from '../../../app/customer/entity/transaction.entity';
 import { ITransactionRepository } from '../../../app/customer/repository/transaction.respository';
-import { Customer } from '../../../app/customer/entity/customer.entity';
 
 @Injectable()
 export class TransactionRepositorySql
@@ -32,8 +31,5 @@ export class TransactionRepositorySql
       .take(10)
       .orderBy({ created_at: 'DESC' })
       .getMany();
-    // `SELECT * FROM transactions WHERE customer_id = ? ORDER BY created_at DESC LIMIT 10;`,
-    // [customer.id],
-    // );
   }
 }

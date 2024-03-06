@@ -1,4 +1,4 @@
-GET http://localhost:3000/clientes/1/extrato
+GET http://localhost:3000/clientes/3/extrato
 
 ###
 POST http://localhost:3000/clientes/1/transacoes
