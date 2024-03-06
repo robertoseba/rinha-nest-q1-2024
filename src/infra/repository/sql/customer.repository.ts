@@ -1,7 +1,8 @@
-import { QueryFailedError, Repository, TypeORMError } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ICustomerRepository } from '../../../app/customer/repository/customer.repository';
 import {
   Injectable,
+  Logger,
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
@@ -17,6 +18,8 @@ export class CustomerRepositorySql
   extends Repository<Customer>
   implements ICustomerRepository
 {
+  private logger = new Logger(CustomerRepositorySql.name);
+
   constructor(@InjectRepository(Customer) private repo: Repository<Customer>) {
     super(repo.target, repo.manager, repo.queryRunner);
   }
@@ -65,6 +68,10 @@ export class CustomerRepositorySql
       if (err?.constraint) {
         throw new UnprocessableEntityException('Saldo estourou limite!');
       }
+
+      this.logger.error(err);
+
+      throw new Error('Algo de errado aconteceu no DB');
     }
   }
 }
