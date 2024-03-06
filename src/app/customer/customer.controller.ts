@@ -14,16 +14,18 @@ export class CustomerController {
   constructor(private readonly service: CustomerService) {}
 
   @Get('/clientes/:id/extrato')
-  getStatement(@Param('id', CustomerValidationPipe) id: number): TStatement {
+  async getStatement(
+    @Param('id', CustomerValidationPipe) id: number,
+  ): Promise<TStatement> {
     return this.service.getStatement(id);
   }
 
   @Post('/clientes/:id/transacoes')
-  createTransaction(
+  async createTransaction(
     @Param('id', CustomerValidationPipe) id: number,
     @Body(new ZodValidationPipe(inputTransactionSchema))
     transaction: TInputTransaction,
-  ): TOuputTransaction {
+  ): Promise<TOuputTransaction> {
     return { limite: 1, saldo: 1 };
   }
 }

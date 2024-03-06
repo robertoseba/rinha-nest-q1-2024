@@ -14,7 +14,8 @@ export class CustomerRepositorySql
     super(repo.target, repo.manager, repo.queryRunner);
   }
 
-  getStatement(id: number): TStatement {
-    throw new Error('Method not implemented.');
+  async getStatement(id: number): Promise<TStatement> {
+    // const customer = await this.get(id);
+    throw new Error('not implemented');
   }
 }

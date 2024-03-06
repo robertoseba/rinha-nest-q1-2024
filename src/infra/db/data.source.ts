@@ -12,7 +12,7 @@ export const dbDatasource: DataSourceOptions = {
   database: process.env['DB_NAME'],
   entities: ['dist/**/*.entity.js'],
   poolSize: parseInt(process.env['DB_POOL_SIZE'] ?? '10'),
-  logging: false,
+  logging: true,
   synchronize: false,
   migrations: ['dist/infra/db/migrations/*.js'],
   migrationsTableName: 'typeorm_migrations',

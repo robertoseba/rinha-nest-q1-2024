@@ -19,7 +19,7 @@ export class CustomerService {
     private readonly transactionRepository: ITransactionRepository,
   ) {}
 
-  getStatement(id: number): TStatement {
+  async getStatement(id: number): Promise<TStatement> {
     return this.customerRepository.getStatement(id);
   }
 

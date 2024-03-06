@@ -17,6 +17,6 @@ export class Balance {
   @JoinColumn({ name: 'customer_id' })
   customer: Relation<Customer>;
 
-  @Column({ type: 'integer', nullable: false })
+  @Column({ type: 'integer', nullable: false, default: 0 })
   balance: number;
 }

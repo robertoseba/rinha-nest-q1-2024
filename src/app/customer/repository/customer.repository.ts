@@ -3,5 +3,5 @@ import { TStatement } from '../type/statement.type';
 export const CUSTOMER_REPOSITORY = Symbol('ICustomerRepository');
 
 export interface ICustomerRepository {
-  getStatement(id: number): TStatement;
+  getStatement(id: number): Promise<TStatement>;
 }
