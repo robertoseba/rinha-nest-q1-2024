@@ -31,11 +31,6 @@ export class CustomerRepositorySql
     id: number,
     transaction: TInputTransaction,
   ): Promise<TOuputTransaction> {
-    // const transactionDB = await this.insert({
-    //   value: transaction.valor,
-    //   description: transaction.descricao,
-    //   type: transaction.type,
-    // });
     const queryRunner = this.queryRunner;
 
     try {
@@ -65,11 +60,11 @@ export class CustomerRepositorySql
 
       return { limite: customer.limit, saldo: customer.balance };
     } catch (err) {
+      await queryRunner?.rollbackTransaction();
+
       if (err?.constraint) {
         throw new UnprocessableEntityException('Saldo estourou limite!');
       }
-
-      await queryRunner?.rollbackTransaction();
     }
   }
 }
