@@ -26,6 +26,6 @@ export class CustomerController {
     @Body(new ZodValidationPipe(inputTransactionSchema))
     transaction: TInputTransaction,
   ): Promise<TOuputTransaction> {
-    return { limite: 1, saldo: 1 };
+    return await this.service.createTransaction(id, transaction);
   }
 }

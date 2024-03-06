@@ -5,7 +5,7 @@ const transactionSchema = z
   .object({
     valor: z.number().positive(),
     tipo: z.enum([TransactionTypeEnum.CREDIT, TransactionTypeEnum.DEBIT]),
-    descricao: z.string(),
+    descricao: z.string().max(10),
     realizada_em: z.date(),
   })
   .required();

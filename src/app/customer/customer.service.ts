@@ -53,13 +53,10 @@ export class CustomerService {
     };
   }
 
-  createTransaction(
+  async createTransaction(
     customerId: number,
     transaction: TInputTransaction,
-  ): TOuputTransaction {
-    return this.transactionRepository.createTransaction(
-      customerId,
-      transaction,
-    );
+  ): Promise<TOuputTransaction> {
+    return this.customerRepository.createTransaction(customerId, transaction);
   }
 }
