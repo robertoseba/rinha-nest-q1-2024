@@ -15,8 +15,6 @@ export class CustomerRepositorySql
 
   async getStatement(id: number): Promise<Customer | null> {
     return await this.findOne({
-      relations: ['balance'],
-      relationLoadStrategy: 'join',
       where: { id: id },
     });
   }

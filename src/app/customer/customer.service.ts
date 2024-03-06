@@ -45,7 +45,7 @@ export class CustomerService {
 
     return {
       saldo: {
-        total: customer.balance.balance,
+        total: customer.balance,
         limite: customer.limit,
         data_extrato: new Date(),
       },

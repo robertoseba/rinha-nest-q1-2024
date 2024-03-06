@@ -4,12 +4,12 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   Relation,
-  OneToOne,
+  Check,
 } from 'typeorm';
 import { Transaction } from './transaction.entity';
-import { Balance } from './balance.entity';
 
 @Entity({ name: 'customers' })
+@Check('"balance" >= "limit" * -1 ')
 export class Customer {
   @PrimaryGeneratedColumn('increment')
   id: number;
@@ -20,13 +20,9 @@ export class Customer {
   @Column({ type: 'integer', default: 0, nullable: false })
   limit: number;
 
-  @OneToMany(() => Transaction, (transaction) => transaction.customer, {
-    nullable: true,
-  })
+  @OneToMany(() => Transaction, (transaction) => transaction.customer)
   transactions: Relation<Transaction>[];
 
-  @OneToOne(() => Balance, (balance) => balance.customer, {
-    nullable: true,
-  })
-  balance: Relation<Balance>;
+  @Column({ type: 'integer', nullable: false, default: 0 })
+  balance: number;
 }
