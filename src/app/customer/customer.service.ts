@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { TStatement } from './type/statement.type';
 import {
   CUSTOMER_REPOSITORY,
@@ -8,7 +8,11 @@ import {
   ITransactionRepository,
   TRANSACTION_REPOSITORY,
 } from './repository/transaction.respository';
-import { TInputTransaction, TOuputTransaction } from './type/transaction.type';
+import {
+  TInputTransaction,
+  TOuputTransaction,
+  TTransaction,
+} from './type/transaction.type';
 
 @Injectable()
 export class CustomerService {
@@ -19,8 +23,33 @@ export class CustomerService {
     private readonly transactionRepository: ITransactionRepository,
   ) {}
 
-  async getStatement(id: number): Promise<TStatement> {
-    return this.customerRepository.getStatement(id);
+  async getStatement(id: number): Promise<TStatement | null> {
+    const customer = await this.customerRepository.getStatement(id);
+    if (!customer) {
+      throw new NotFoundException('Cliente não encontrado!');
+    }
+
+    const lastTransactions =
+      await this.transactionRepository.getLastTransactionsBy(customer);
+
+    const returnTransactions: TTransaction[] = lastTransactions.map(
+      (transaction) => {
+        return {
+          valor: transaction.value,
+          tipo: transaction.type,
+          descricao: transaction.description,
+          realizada_em: transaction.createdAt,
+        };
+      },
+    );
+    return {
+      saldo: {
+        total: customer.balance.balance,
+        limite: customer.limit,
+        data_extrato: new Date(),
+      },
+      ultimas_transacoes: returnTransactions,
+    };
   }
 
   createTransaction(

@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { TStatement } from './type/statement.type';
 import {
@@ -17,7 +24,13 @@ export class CustomerController {
   async getStatement(
     @Param('id', CustomerValidationPipe) id: number,
   ): Promise<TStatement> {
-    return this.service.getStatement(id);
+    const statement = await this.service.getStatement(id);
+
+    if (!statement) {
+      throw new NotFoundException('Cliente não encontrado!');
+    }
+
+    return statement;
   }
 
   @Post('/clientes/:id/transacoes')

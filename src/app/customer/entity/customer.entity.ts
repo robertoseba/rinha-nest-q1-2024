@@ -25,7 +25,7 @@ export class Customer {
   })
   transactions: Relation<Transaction>[];
 
-  @OneToOne(() => Balance, (balance) => balance.balance, {
+  @OneToOne(() => Balance, (balance) => balance.customer, {
     nullable: true,
   })
   balance: Relation<Balance>;
