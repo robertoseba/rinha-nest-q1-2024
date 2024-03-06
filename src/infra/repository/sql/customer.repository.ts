@@ -80,7 +80,7 @@ export class CustomerRepositorySql
 
       this.logger.error(err);
 
-      throw new Error('Algo de errado aconteceu no DB');
+      throw new Error('Não foi possível realizar operação.');
     }
   }
 }
