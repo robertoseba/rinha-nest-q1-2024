@@ -1,11 +1,11 @@
-GET http://localhost:3000/clientes/3/extrato
+GET http://localhost:3000/clientes/1/extrato
 
 ###
 POST http://localhost:3000/clientes/1/transacoes
 Content-Type: application/json
 
 {
-  "valor": 1,
+  "valor": 100000,
   "tipo": "c",
   "descricao" : "descrição"
 }

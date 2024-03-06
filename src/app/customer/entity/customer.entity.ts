@@ -8,8 +8,9 @@ import {
 } from 'typeorm';
 import { Transaction } from './transaction.entity';
 
+export const BALANCE_CONSTRAINT = 'balance_over_limit_constraint';
 @Entity({ name: 'customers' })
-@Check('"balance" >= "limit" * -1 ')
+@Check(BALANCE_CONSTRAINT, '"balance" >= "limit" * -1 ')
 export class Customer {
   @PrimaryGeneratedColumn('increment')
   id: number;

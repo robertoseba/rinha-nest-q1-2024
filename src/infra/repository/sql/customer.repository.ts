@@ -7,11 +7,15 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Customer } from '../../../app/customer/entity/customer.entity';
+import {
+  BALANCE_CONSTRAINT,
+  Customer,
+} from '../../../app/customer/entity/customer.entity';
 import {
   TInputTransaction,
   TOuputTransaction,
 } from '../../../app/customer/type/transaction.type';
+import { TransactionTypeEnum } from '../../../app/customer/entity/transaction.entity';
 
 @Injectable()
 export class CustomerRepositorySql
@@ -43,11 +47,16 @@ export class CustomerRepositorySql
         .where('id = :id', { id: id })
         .execute();
 
+      const queryStrategy = {
+        [TransactionTypeEnum.CREDIT]: `UPDATE customers SET balance = balance + $1 WHERE customers.id = $2 RETURNING *`,
+        [TransactionTypeEnum.DEBIT]: `UPDATE customers SET balance = balance - $1 WHERE customers.id = $2 RETURNING *`,
+      };
+
       const customer: Customer | null = (
-        await this.query(
-          `UPDATE customers SET balance = balance - $1 WHERE customers.id = $2 RETURNING *`,
-          [transaction.valor, id],
-        )
+        await this.query(queryStrategy[transaction.tipo], [
+          transaction.valor,
+          id,
+        ])
       )[0][0];
 
       if (!customer) {
@@ -65,7 +74,7 @@ export class CustomerRepositorySql
     } catch (err) {
       await queryRunner?.rollbackTransaction();
 
-      if (err?.constraint) {
+      if (err?.constraint == BALANCE_CONSTRAINT) {
         throw new UnprocessableEntityException('Saldo estourou limite!');
       }
 
