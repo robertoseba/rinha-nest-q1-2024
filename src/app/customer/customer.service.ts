@@ -22,7 +22,7 @@ import {
 } from './type/transaction.type';
 import { DataSource } from 'typeorm';
 import { TransactionTypeEnum } from './entity/transaction.entity';
-import { BALANCE_CONSTRAINT } from './entity/customer.entity';
+import { BALANCE_CONSTRAINT, Customer } from './entity/customer.entity';
 
 @Injectable()
 export class CustomerService {
@@ -67,7 +67,7 @@ export class CustomerService {
   async createTransaction(
     customerId: number,
     inputDTO: TInputTransaction,
-  ): Promise<TOuputTransaction> {
+  ): Promise<Customer> {
     const queryRunner = this.dataSource.createQueryRunner();
 
     try {
@@ -96,7 +96,7 @@ export class CustomerService {
         queryRunner.manager,
       );
 
-      return { saldo: customer.balance, limite: customer.limit };
+      return customer;
     } catch (err) {
       await queryRunner.rollbackTransaction();
 
