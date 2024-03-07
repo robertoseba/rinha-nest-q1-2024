@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Transaction } from '../../../app/customer/entity/transaction.entity';
@@ -21,7 +21,10 @@ export class TransactionRepositorySql implements ITransactionRepository {
 
   async saveTransaction(
     transactionData: Partial<Transaction>,
+    manager?: null | EntityManager,
   ): Promise<Transaction> {
-    return await this.repo.save(transactionData);
+    const repo = manager?.getRepository(Transaction) ?? this.repo;
+
+    return await repo.save(transactionData);
   }
 }

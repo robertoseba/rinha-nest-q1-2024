@@ -78,18 +78,23 @@ export class CustomerService {
           ? await this.customerRepository.increaseBalance(
               customerId,
               inputDTO.valor,
+              queryRunner.manager,
             )
           : await this.customerRepository.decreaseBalance(
               customerId,
               inputDTO.valor,
+              queryRunner.manager,
             );
 
-      await this.transactionRepository.saveTransaction({
-        description: inputDTO.descricao,
-        value: inputDTO.valor,
-        type: inputDTO.tipo,
-        customer: customer,
-      });
+      await this.transactionRepository.saveTransaction(
+        {
+          description: inputDTO.descricao,
+          value: inputDTO.valor,
+          type: inputDTO.tipo,
+          customer: customer,
+        },
+        queryRunner.manager,
+      );
 
       return { saldo: customer.balance, limite: customer.limit };
     } catch (err) {
@@ -103,6 +108,7 @@ export class CustomerService {
         throw err;
       }
 
+      console.error(err);
       throw new HttpException(
         'Não foi possível realizar operação.',
         HttpStatus.INTERNAL_SERVER_ERROR,

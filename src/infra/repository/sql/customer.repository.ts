@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { ICustomerRepository } from '../../../app/customer/repository/customer.repository';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,15 +14,21 @@ export class CustomerRepositorySql implements ICustomerRepository {
     });
   }
 
-  async increaseBalance(customerId: number, amount: number): Promise<Customer> {
-    await this.repo
+  async increaseBalance(
+    customerId: number,
+    amount: number,
+    manager?: null | EntityManager,
+  ): Promise<Customer> {
+    const repo = manager?.getRepository(Customer) ?? this.repo;
+
+    await repo
       .createQueryBuilder()
       .setLock('pessimistic_read')
       .where('id = :id', { id: customerId })
       .execute();
 
     const customer: Customer | undefined = (
-      await this.repo.query(
+      await repo.query(
         `UPDATE customers SET balance = balance + $1 WHERE customers.id = $2 RETURNING *`,
         [amount, customerId],
       )
@@ -35,15 +41,21 @@ export class CustomerRepositorySql implements ICustomerRepository {
     return customer;
   }
 
-  async decreaseBalance(customerId: number, amount: number): Promise<Customer> {
-    await this.repo
+  async decreaseBalance(
+    customerId: number,
+    amount: number,
+    manager?: null | EntityManager,
+  ): Promise<Customer> {
+    const repo = manager?.getRepository(Customer) ?? this.repo;
+
+    await repo
       .createQueryBuilder()
       .setLock('pessimistic_read')
       .where('id = :id', { id: customerId })
       .execute();
 
     const customer: Customer | undefined = (
-      await this.repo.query(
+      await repo.query(
         `UPDATE customers SET balance = balance - $1 WHERE customers.id = $2 RETURNING *`,
         [amount, customerId],
       )
