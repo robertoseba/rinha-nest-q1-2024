@@ -23,7 +23,7 @@ export class CustomerRepositorySql implements ICustomerRepository {
 
     await repo
       .createQueryBuilder()
-      .setLock('pessimistic_read')
+      .setLock('pessimistic_write')
       .where('id = :id', { id: customerId })
       .execute();
 
@@ -50,7 +50,7 @@ export class CustomerRepositorySql implements ICustomerRepository {
 
     await repo
       .createQueryBuilder()
-      .setLock('pessimistic_read')
+      .setLock('pessimistic_write')
       .where('id = :id', { id: customerId })
       .execute();
 

@@ -3,9 +3,9 @@ import { TransactionTypeEnum } from '../entity/transaction.entity';
 
 const transactionSchema = z
   .object({
-    valor: z.number().positive(),
+    valor: z.number().int().positive(),
     tipo: z.enum([TransactionTypeEnum.CREDIT, TransactionTypeEnum.DEBIT]),
-    descricao: z.string().max(10),
+    descricao: z.string().min(1).max(10),
     realizada_em: z.date(),
   })
   .required();

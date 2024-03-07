@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { TStatement } from './type/statement.type';
 import {
@@ -21,6 +21,7 @@ export class CustomerController {
   }
 
   @Post('/clientes/:id/transacoes')
+  @HttpCode(200)
   async createTransaction(
     @Param('id', CustomerValidationPipe) id: number,
     @Body(new ZodValidationPipe(inputTransactionSchema))
@@ -28,6 +29,6 @@ export class CustomerController {
   ): Promise<TOuputTransaction> {
     const customer = await this.service.createTransaction(id, transaction);
 
-    return { saldo: customer.balance, limite: customer.limit };
+    return { limite: customer.limit, saldo: customer.balance };
   }
 }

@@ -15,11 +15,7 @@ import {
   ITransactionRepository,
   TRANSACTION_REPOSITORY,
 } from './repository/transaction.respository';
-import {
-  TInputTransaction,
-  TOuputTransaction,
-  TTransaction,
-} from './type/transaction.type';
+import { TInputTransaction, TTransaction } from './type/transaction.type';
 import { DataSource } from 'typeorm';
 import { TransactionTypeEnum } from './entity/transaction.entity';
 import { BALANCE_CONSTRAINT, Customer } from './entity/customer.entity';
@@ -57,8 +53,8 @@ export class CustomerService {
     return {
       saldo: {
         total: customer.balance,
-        limite: customer.limit,
         data_extrato: new Date(),
+        limite: customer.limit,
       },
       ultimas_transacoes: returnTransactions,
     };

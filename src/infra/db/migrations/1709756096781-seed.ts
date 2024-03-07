@@ -9,10 +9,11 @@ export class Seed1709756096781 implements MigrationInterface {
       .insert()
       .into(Customer)
       .values([
-        { name: 'customer 2', limit: 800 * 100 },
-        { name: 'customer 3', limit: 10000 * 100 },
-        { name: 'customer 4', limit: 100000 * 100 },
-        { name: 'customer 5', limit: 5000 * 100 },
+        { name: 'customer 1', limit: 100000 },
+        { name: 'customer 2', limit: 80000 },
+        { name: 'customer 3', limit: 1000000 },
+        { name: 'customer 4', limit: 10000000 },
+        { name: 'customer 5', limit: 500000 },
       ])
       .execute();
   }
