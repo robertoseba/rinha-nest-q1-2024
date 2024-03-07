@@ -96,6 +96,8 @@ export class CustomerService {
         queryRunner.manager,
       );
 
+      await queryRunner.commitTransaction();
+
       return customer;
     } catch (err) {
       await queryRunner.rollbackTransaction();
