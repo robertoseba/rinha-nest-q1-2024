@@ -8,7 +8,7 @@ import { LoggerModule } from 'nestjs-pino';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         pinoHttp: {
-          level: config.get('NODE_ENV') === 'production' ? 'info' : 'debug',
+          level: config.get('NODE_ENV') === 'production' ? 'error' : 'debug',
           formatters: {
             level(level: string) {
               return { level };
