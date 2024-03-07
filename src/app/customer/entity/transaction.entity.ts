@@ -6,6 +6,7 @@ import {
   ManyToOne,
   CreateDateColumn,
   Relation,
+  Index,
 } from 'typeorm';
 import { Customer } from './customer.entity';
 
@@ -15,6 +16,7 @@ export enum TransactionTypeEnum {
 }
 
 @Entity({ name: 'transactions' })
+@Index('created_at_index', ['customer', 'createdAt'])
 export class Transaction {
   @PrimaryGeneratedColumn('increment')
   id: number;

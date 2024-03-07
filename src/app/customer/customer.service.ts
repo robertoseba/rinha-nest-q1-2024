@@ -1,4 +1,11 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { TStatement } from './type/statement.type';
 import {
   CUSTOMER_REPOSITORY,
@@ -13,6 +20,9 @@ import {
   TOuputTransaction,
   TTransaction,
 } from './type/transaction.type';
+import { DataSource } from 'typeorm';
+import { TransactionTypeEnum } from './entity/transaction.entity';
+import { BALANCE_CONSTRAINT } from './entity/customer.entity';
 
 @Injectable()
 export class CustomerService {
@@ -21,16 +31,17 @@ export class CustomerService {
     private readonly customerRepository: ICustomerRepository,
     @Inject(TRANSACTION_REPOSITORY)
     private readonly transactionRepository: ITransactionRepository,
+    private readonly dataSource: DataSource,
   ) {}
 
-  async getStatement(id: number): Promise<TStatement> {
-    const customer = await this.customerRepository.getStatement(id);
+  async getStatement(customerId: number): Promise<TStatement> {
+    const customer = await this.customerRepository.getById(customerId);
     if (!customer) {
       throw new NotFoundException('Cliente não encontrado!');
     }
 
     const lastTransactions =
-      await this.transactionRepository.getLastTransactionsBy(id);
+      await this.transactionRepository.getLastTransactionsBy(customerId);
 
     const returnTransactions: TTransaction[] = lastTransactions.map(
       (transaction) => {
@@ -55,8 +66,49 @@ export class CustomerService {
 
   async createTransaction(
     customerId: number,
-    transaction: TInputTransaction,
+    inputDTO: TInputTransaction,
   ): Promise<TOuputTransaction> {
-    return this.customerRepository.createTransaction(customerId, transaction);
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    try {
+      await queryRunner.startTransaction('READ COMMITTED');
+
+      const customer =
+        inputDTO.tipo === TransactionTypeEnum.CREDIT
+          ? await this.customerRepository.increaseBalance(
+              customerId,
+              inputDTO.valor,
+            )
+          : await this.customerRepository.decreaseBalance(
+              customerId,
+              inputDTO.valor,
+            );
+
+      await this.transactionRepository.saveTransaction({
+        description: inputDTO.descricao,
+        value: inputDTO.valor,
+        type: inputDTO.tipo,
+        customer: customer,
+      });
+
+      return { saldo: customer.balance, limite: customer.limit };
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+
+      if (err?.constraint == BALANCE_CONSTRAINT) {
+        throw new UnprocessableEntityException('Saldo estourou limite!');
+      }
+
+      if (err instanceof NotFoundException) {
+        throw err;
+      }
+
+      throw new HttpException(
+        'Não foi possível realizar operação.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    } finally {
+      queryRunner.release();
+    }
   }
 }
