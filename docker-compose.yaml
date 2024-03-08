@@ -9,7 +9,7 @@ services:
       - DB_NAME=rinha
       - DB_PASSWORD=123
       - DB_USER=admin
-      - DB_POOL_SIZE=10
+      - DB_POOL_SIZE=5
       - DB_PORT=5432
       - PORT=3000
     ports:
