@@ -19,6 +19,8 @@ import { TInputTransaction, TTransaction } from './type/transaction.type';
 import { DataSource } from 'typeorm';
 import { TransactionTypeEnum } from './entity/transaction.entity';
 import { BALANCE_CONSTRAINT, Customer } from './entity/customer.entity';
+import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
 export class CustomerService {
@@ -28,11 +30,19 @@ export class CustomerService {
     @Inject(TRANSACTION_REPOSITORY)
     private readonly transactionRepository: ITransactionRepository,
     private readonly dataSource: DataSource,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async getStatement(customerId: number): Promise<TStatement> {
+    const is404 = await this.cacheManager.get(`${customerId}`);
+    if (is404) {
+      throw new NotFoundException('Cliente não encontrado!');
+    }
+
     const customer = await this.customerRepository.getById(customerId);
+
     if (!customer) {
+      await this.cacheManager.set(`customerId`, 1, 0);
       throw new NotFoundException('Cliente não encontrado!');
     }
 
@@ -67,6 +77,11 @@ export class CustomerService {
     const queryRunner = this.dataSource.createQueryRunner();
     let customer = null;
     try {
+      const is404 = await this.cacheManager.get(`${customerId}`);
+      if (is404) {
+        throw new NotFoundException('Cliente não encontrado!');
+      }
+
       await queryRunner.startTransaction();
 
       if (inputDTO.tipo === TransactionTypeEnum.CREDIT) {
@@ -102,6 +117,7 @@ export class CustomerService {
       }
 
       if (err instanceof NotFoundException) {
+        await this.cacheManager.set(`${customerId}`, 0, 0);
         throw err;
       }
 
