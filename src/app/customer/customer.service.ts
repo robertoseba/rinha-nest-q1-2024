@@ -65,22 +65,23 @@ export class CustomerService {
     inputDTO: TInputTransaction,
   ): Promise<Customer> {
     const queryRunner = this.dataSource.createQueryRunner();
-
+    let customer = null;
     try {
-      await queryRunner.startTransaction('READ COMMITTED');
+      await queryRunner.startTransaction();
 
-      const customer =
-        inputDTO.tipo === TransactionTypeEnum.CREDIT
-          ? await this.customerRepository.increaseBalance(
-              customerId,
-              inputDTO.valor,
-              queryRunner.manager,
-            )
-          : await this.customerRepository.decreaseBalance(
-              customerId,
-              inputDTO.valor,
-              queryRunner.manager,
-            );
+      if (inputDTO.tipo === TransactionTypeEnum.CREDIT) {
+        customer = await this.customerRepository.increaseBalance(
+          customerId,
+          inputDTO.valor,
+          queryRunner.manager,
+        );
+      } else {
+        customer = await this.customerRepository.decreaseBalance(
+          customerId,
+          inputDTO.valor,
+          queryRunner.manager,
+        );
+      }
 
       await this.transactionRepository.saveTransaction(
         {
@@ -93,8 +94,6 @@ export class CustomerService {
       );
 
       await queryRunner.commitTransaction();
-
-      return customer;
     } catch (err) {
       await queryRunner.rollbackTransaction();
 
@@ -112,7 +111,9 @@ export class CustomerService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     } finally {
-      queryRunner.release();
+      await queryRunner.release();
     }
+
+    return customer;
   }
 }

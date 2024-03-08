@@ -21,11 +21,7 @@ export class CustomerRepositorySql implements ICustomerRepository {
   ): Promise<Customer> {
     const repo = manager?.getRepository(Customer) ?? this.repo;
 
-    await repo
-      .createQueryBuilder()
-      .setLock('pessimistic_write')
-      .where('id = :id', { id: customerId })
-      .execute();
+    await repo.query(`SELECT pg_advisory_xact_lock($1);`, [customerId]);
 
     const customer: Customer | undefined = (
       await repo.query(
@@ -48,11 +44,7 @@ export class CustomerRepositorySql implements ICustomerRepository {
   ): Promise<Customer> {
     const repo = manager?.getRepository(Customer) ?? this.repo;
 
-    await repo
-      .createQueryBuilder()
-      .setLock('pessimistic_write')
-      .where('id = :id', { id: customerId })
-      .execute();
+    await repo.query(`SELECT pg_advisory_xact_lock($1);`, [customerId]);
 
     const customer: Customer | undefined = (
       await repo.query(

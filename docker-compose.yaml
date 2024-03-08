@@ -9,7 +9,7 @@ services:
       - DB_NAME=rinha
       - DB_PASSWORD=123
       - DB_USER=admin
-      - DB_POOL_SIZE=20
+      - DB_POOL_SIZE=10
       - DB_PORT=5432
       - PORT=3000
     ports:
@@ -21,8 +21,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.30'
-          memory: '125MB'
+          cpus: '0.4'
+          memory: '150MB'
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://api01:3000/clientes/1/extrato']
       interval: 2s
@@ -52,8 +52,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.15'
-          memory: '30MB'
+          cpus: '0.1'
+          memory: '50MB'
 
   db:
     image: postgres:latest
@@ -68,8 +68,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.75'
-          memory: '270MB'
+          cpus: '0.6'
+          memory: '200MB'
     healthcheck:
       test: ['CMD', 'pg_isready', '--username', 'admin', '-d', 'rinha']
       interval: 15s
