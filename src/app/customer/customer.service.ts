@@ -39,15 +39,20 @@ export class CustomerService {
       throw new NotFoundException('Cliente não encontrado!');
     }
 
-    const customer = await this.customerRepository.getById(customerId);
+    const customerP = this.customerRepository.getById(customerId);
+
+    const lastTransactionsP =
+      this.transactionRepository.getLastTransactionsBy(customerId);
+
+    const [customer, lastTransactions] = await Promise.all([
+      customerP,
+      lastTransactionsP,
+    ]);
 
     if (!customer) {
       await this.cacheManager.set(`customerId`, 1, 0);
       throw new NotFoundException('Cliente não encontrado!');
     }
-
-    const lastTransactions =
-      await this.transactionRepository.getLastTransactionsBy(customerId);
 
     const returnTransactions: TTransaction[] = lastTransactions.map(
       (transaction) => {
@@ -75,14 +80,18 @@ export class CustomerService {
     inputDTO: TInputTransaction,
   ): Promise<Customer> {
     const queryRunner = this.dataSource.createQueryRunner();
-    let customer = null;
+
     try {
       const is404 = await this.cacheManager.get(`${customerId}`);
       if (is404) {
         throw new NotFoundException('Cliente não encontrado!');
       }
 
+      await queryRunner.connect();
+
       await queryRunner.startTransaction();
+
+      let customer = null;
 
       if (inputDTO.tipo === TransactionTypeEnum.CREDIT) {
         customer = await this.customerRepository.increaseBalance(
@@ -109,6 +118,7 @@ export class CustomerService {
       );
 
       await queryRunner.commitTransaction();
+      return customer;
     } catch (err) {
       await queryRunner.rollbackTransaction();
 
@@ -121,7 +131,6 @@ export class CustomerService {
         throw err;
       }
 
-      console.error(err);
       throw new HttpException(
         'Não foi possível realizar operação.',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -129,7 +138,5 @@ export class CustomerService {
     } finally {
       await queryRunner.release();
     }
-
-    return customer;
   }
 }
