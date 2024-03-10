@@ -22,10 +22,12 @@ export class CreateTransactionService {
   constructor(
     @Inject(ACCOUNT_REPOSITORY)
     private readonly accountRepository: IAccountRepository,
+
     @Inject(TRANSACTION_REPOSITORY)
     private readonly transactionRepository: ITransactionRepository,
 
     private readonly databaseService: DatabaseService,
+
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
@@ -37,11 +39,14 @@ export class CreateTransactionService {
   ): Promise<Account> {
     const account = await this.databaseService.startTransaction(
       async (queryRunner: QueryRunner) => {
-        const account = await this.accountRepository.updateBalance(
-          accountId,
+        const value =
           inputDTO.tipo === TransactionTypeEnum.CREDIT
             ? inputDTO.valor
-            : -inputDTO.valor,
+            : -inputDTO.valor;
+
+        const account = await this.accountRepository.updateBalance(
+          accountId,
+          value,
           queryRunner.manager,
         );
 
