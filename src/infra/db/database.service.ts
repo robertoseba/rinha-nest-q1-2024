@@ -12,16 +12,17 @@ export class DatabaseService {
       await queryRunner.connect();
 
       await queryRunner.startTransaction();
+
       const result = await callback(queryRunner);
+
       await queryRunner.commitTransaction();
+
       return result;
     } catch (err) {
-      console.log('roling bac');
       await queryRunner.rollbackTransaction();
+
       throw err;
     } finally {
-      console.log('releasing');
-
       await queryRunner.release();
     }
   }

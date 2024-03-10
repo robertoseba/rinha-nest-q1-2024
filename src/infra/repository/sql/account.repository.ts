@@ -49,7 +49,6 @@ export class AccountRepositorySql implements IAccountRepository {
 
       return account;
     } catch (err) {
-      console.error('GOT HIERE!!!!!!!!!!!');
       if (err?.constraint == ACCOUNT_CONSTRAINT) {
         throw new UnprocessableEntityException('Saldo estourou limite!');
       }

@@ -33,7 +33,7 @@ export class CreateTransactionService {
     accountId: number,
     inputDTO: TInputTransaction,
   ): Promise<Account> {
-    const account = this.databaseService.startTransaction(
+    const account = await this.databaseService.startTransaction(
       async (queryRunner: QueryRunner) => {
         const account = await this.accountRepository.updateBalance(
           accountId,
@@ -52,11 +52,12 @@ export class CreateTransactionService {
           },
           queryRunner.manager,
         );
-        await this.cacheManager.del(`${accountId}_statement`);
 
         return account;
       },
     );
+
+    await this.cacheManager.del(`${accountId}_statement`);
     return account;
   }
 }
