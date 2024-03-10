@@ -17,7 +17,7 @@
 
 - [repositório da api](https://github.com/robertoseba/rinha-nest-q1-2024)
 
-![images do relatorio do gatling](https://github.com/robertoseba/rinha-nest-q1-2024/blob/master/docs/rinha_results.png)
+![images do relatorio do gatling](https://github.com/robertoseba/rinha-nest-q1-2024/blob/main/docs/rinha_results.png)
 
 ## Roberto Seba
 
