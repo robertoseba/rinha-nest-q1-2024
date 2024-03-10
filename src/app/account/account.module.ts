@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DatabaseService } from '../../infra/db/database.service';
+import { DatabaseModule } from '../../infra/db/database.module';
 import { AccountRepositorySql } from '../../infra/repository/sql/account.repository';
 import { TransactionRepositorySql } from '../../infra/repository/sql/transaction.repository';
 import { AccountController } from './account.controller';
@@ -13,10 +13,9 @@ import { GetStatementService } from './service/get-statement.service';
 import { TransactionController } from './transaction.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Account, Transaction])],
+  imports: [TypeOrmModule.forFeature([Account, Transaction]), DatabaseModule],
   controllers: [AccountController, TransactionController],
   providers: [
-    DatabaseService,
     GetStatementService,
     CreateTransactionService,
     {

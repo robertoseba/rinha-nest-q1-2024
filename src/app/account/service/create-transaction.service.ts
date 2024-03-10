@@ -1,8 +1,8 @@
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable } from '@nestjs/common';
-import { Cache } from 'cache-manager';
 import { QueryRunner } from 'typeorm';
 import { DatabaseService } from '../../../infra/db/database.service';
+import { NotFoundCache } from '../decorator/not-found-cache.decorator';
+import { ResetStatementCache } from '../decorator/reset-statement.decorator';
 import { Account } from '../entity/account.entity';
 import { TransactionTypeEnum } from '../entity/transaction.entity';
 import {
@@ -14,8 +14,6 @@ import {
   TRANSACTION_REPOSITORY,
 } from '../repository/transaction.respository';
 import { TInputTransaction } from '../type/transaction.type';
-import { NotFoundCache } from './not-found-cache.decorator';
-import { ResetStatementCache } from './reset-statement.decorator';
 
 @Injectable()
 export class CreateTransactionService {
@@ -27,8 +25,6 @@ export class CreateTransactionService {
     private readonly transactionRepository: ITransactionRepository,
 
     private readonly databaseService: DatabaseService,
-
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   @NotFoundCache()
