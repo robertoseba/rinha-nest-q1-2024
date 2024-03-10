@@ -1,8 +1,8 @@
-import { EntityManager, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Transaction } from '../../../app/customer/entity/transaction.entity';
-import { ITransactionRepository } from '../../../app/customer/repository/transaction.respository';
+import { EntityManager, Repository } from 'typeorm';
+import { Transaction } from '../../../app/account/entity/transaction.entity';
+import { ITransactionRepository } from '../../../app/account/repository/transaction.respository';
 
 @Injectable()
 export class TransactionRepositorySql implements ITransactionRepository {
@@ -10,10 +10,10 @@ export class TransactionRepositorySql implements ITransactionRepository {
     @InjectRepository(Transaction) private repo: Repository<Transaction>,
   ) {}
 
-  async getLastTransactionsBy(customerId: number): Promise<Transaction[]> {
+  async getLastTransactionsBy(accountId: number): Promise<Transaction[]> {
     return await this.repo
       .createQueryBuilder()
-      .where({ customer: { id: customerId } })
+      .where({ account: { id: accountId } })
       .take(10)
       .orderBy({ created_at: 'DESC' })
       .getMany();

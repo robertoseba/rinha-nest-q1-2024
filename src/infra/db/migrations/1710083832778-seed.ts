@@ -1,13 +1,13 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
-import { Customer } from '../../../app/customer/entity/customer.entity';
+import { Account } from '../../../app/account/entity/account.entity';
 
-export class Seed1709756096781 implements MigrationInterface {
+export class Seed1710083832778 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     const queryBuilder = queryRunner.manager.createQueryBuilder();
 
     await queryBuilder
       .insert()
-      .into(Customer)
+      .into(Account)
       .values([
         { name: 'customer 1', limit: 100000 },
         { name: 'customer 2', limit: 80000 },
@@ -19,6 +19,6 @@ export class Seed1709756096781 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DELETE FROM customers`);
+    await queryRunner.query(`DELETE FROM accounts`);
   }
 }

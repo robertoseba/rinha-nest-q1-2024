@@ -1,17 +1,18 @@
 import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToMany,
-  Relation,
   Check,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  Relation,
 } from 'typeorm';
 import { Transaction } from './transaction.entity';
 
-export const BALANCE_CONSTRAINT = 'balance_over_limit_constraint';
-@Entity({ name: 'customers' })
-@Check(BALANCE_CONSTRAINT, '"balance" >= "limit" * -1 ')
-export class Customer {
+export const ACCOUNT_CONSTRAINT = 'balance_over_limit_constraint';
+
+@Entity({ name: 'accounts' })
+@Check(ACCOUNT_CONSTRAINT, '"balance" >= "limit" * -1 ')
+export class Account {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
@@ -21,7 +22,7 @@ export class Customer {
   @Column({ type: 'integer', default: 0, nullable: false })
   limit: number;
 
-  @OneToMany(() => Transaction, (transaction) => transaction.customer)
+  @OneToMany(() => Transaction, (transaction) => transaction.account)
   transactions: Relation<Transaction>[];
 
   @Column({ type: 'integer', nullable: false, default: 0 })

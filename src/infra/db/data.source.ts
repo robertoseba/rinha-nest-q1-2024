@@ -18,9 +18,6 @@ export const dbDatasource: DataSourceOptions = {
   migrationsTableName: 'typeorm_migrations',
   migrationsRun: true,
   extra: { idleTimeoutMillis: 120000 },
-  poolErrorHandler: (err) => {
-    console.error(err);
-  },
 };
 
 const dataSource = new DataSource(dbDatasource);

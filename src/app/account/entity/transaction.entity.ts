@@ -1,14 +1,14 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  Entity,
+  Index,
   JoinColumn,
   ManyToOne,
-  CreateDateColumn,
+  PrimaryGeneratedColumn,
   Relation,
-  Index,
 } from 'typeorm';
-import { Customer } from './customer.entity';
+import { Account } from './account.entity';
 
 export enum TransactionTypeEnum {
   CREDIT = 'c',
@@ -16,16 +16,16 @@ export enum TransactionTypeEnum {
 }
 
 @Entity({ name: 'transactions' })
-@Index('created_at_index', ['customer', 'createdAt'])
+@Index('created_at_index', ['account', 'createdAt'])
 export class Transaction {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @ManyToOne(() => Customer, (customer) => customer.transactions, {
+  @ManyToOne(() => Account, (account) => account.transactions, {
     nullable: false,
   })
-  @JoinColumn({ name: 'customer_id' })
-  customer: Relation<Customer>;
+  @JoinColumn({ name: 'account_id' })
+  account: Relation<Account>;
 
   @Column({ type: 'integer', nullable: false })
   value: number;

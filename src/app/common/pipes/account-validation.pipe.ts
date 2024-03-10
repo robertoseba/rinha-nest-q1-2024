@@ -1,6 +1,6 @@
 import { ParseIntPipe, UnprocessableEntityException } from '@nestjs/common';
 
-export class CustomerValidationPipe extends ParseIntPipe {
+export class AccountValidationPipe extends ParseIntPipe {
   constructor() {
     super({
       exceptionFactory(error) {
