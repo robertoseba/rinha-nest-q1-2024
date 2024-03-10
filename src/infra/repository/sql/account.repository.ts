@@ -8,10 +8,15 @@ import { IAccountRepository } from '../../../app/account/repository/account.repo
 export class AccountRepositorySql implements IAccountRepository {
   constructor(@InjectRepository(Account) private repo: Repository<Account>) {}
 
-  async getById(id: number): Promise<Account | null> {
-    return await this.repo.findOne({
+  async getById(id: number): Promise<Account> {
+    const account = await this.repo.findOne({
       where: { id: id },
     });
+
+    if (!account) {
+      throw new NotFoundException('Cliente não encontrado!');
+    }
+    return account;
   }
 
   async updateBalance(

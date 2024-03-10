@@ -1,6 +1,6 @@
 import { Body, Controller, HttpCode, Param, Post } from '@nestjs/common';
-import { AccountValidationPipe } from '../common/pipes/account-validation.pipe';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
+import { AccountValidationPipe } from './account-validation.pipe';
 import { CreateTransactionService } from './service/create-transaction.service';
 import {
   TInputTransaction,

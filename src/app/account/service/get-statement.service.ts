@@ -1,5 +1,5 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { Transaction } from '../entity/transaction.entity';
 import {
@@ -12,6 +12,7 @@ import {
 } from '../repository/transaction.respository';
 import { TStatement } from '../type/statement.type';
 import { TTransaction } from '../type/transaction.type';
+import { CheckCache } from './cache.decorator';
 
 @Injectable()
 export class getStatementService {
@@ -23,12 +24,8 @@ export class getStatementService {
     private readonly transactionRepository: ITransactionRepository,
   ) {}
 
+  @CheckCache()
   async execute(accountId: number): Promise<TStatement> {
-    const is404 = await this.cacheManager.get(`${accountId}`);
-    if (is404) {
-      throw new NotFoundException('Cliente não encontrado!');
-    }
-
     const promiseAccount = this.accountRepository.getById(accountId);
 
     const promiseTransaction =
@@ -38,11 +35,6 @@ export class getStatementService {
       promiseAccount,
       promiseTransaction,
     ]);
-
-    if (!account) {
-      await this.cacheManager.set(`accountId`, 1, 0);
-      throw new NotFoundException('Cliente não encontrado!');
-    }
 
     return {
       saldo: {
