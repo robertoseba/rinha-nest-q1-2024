@@ -2,6 +2,8 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, NotFoundException } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 
+const CACHE_EXPIRATION_MS = 0;
+
 export function CheckCache(): MethodDecorator {
   const injector = Inject(CACHE_MANAGER);
 
@@ -21,14 +23,17 @@ export function CheckCache(): MethodDecorator {
       const is404 = await cacheManager.get(`${accountId}_not_found`);
 
       if (is404) {
-        console.log('cach e hit!');
         throw new NotFoundException('Cliente não encontrado!');
       }
       try {
         return await method.apply(this, args);
       } catch (err) {
         if (err instanceof NotFoundException) {
-          await cacheManager.set(`${accountId}_not_found`, 1, 0);
+          await cacheManager.set(
+            `${accountId}_not_found`,
+            1,
+            CACHE_EXPIRATION_MS,
+          );
         }
         throw err;
       }
