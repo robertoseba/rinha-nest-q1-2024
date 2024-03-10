@@ -1,15 +1,9 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import {
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-  NotFoundException,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
-import { DataSource } from 'typeorm';
-import { ACCOUNT_CONSTRAINT, Account } from '../entity/account.entity';
+import { QueryRunner } from 'typeorm';
+import { DatabaseService } from '../../../infra/db/database.service';
+import { Account } from '../entity/account.entity';
 import { TransactionTypeEnum } from '../entity/transaction.entity';
 import {
   ACCOUNT_REPOSITORY,
@@ -29,8 +23,8 @@ export class CreateTransactionService {
     private readonly accountRepository: IAccountRepository,
     @Inject(TRANSACTION_REPOSITORY)
     private readonly transactionRepository: ITransactionRepository,
-    // infra
-    private readonly dataSource: DataSource,
+
+    private readonly databaseService: DatabaseService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
@@ -39,58 +33,30 @@ export class CreateTransactionService {
     accountId: number,
     inputDTO: TInputTransaction,
   ): Promise<Account> {
-    const queryRunner = this.dataSource.createQueryRunner();
+    const account = this.databaseService.startTransaction(
+      async (queryRunner: QueryRunner) => {
+        const account = await this.accountRepository.updateBalance(
+          accountId,
+          inputDTO.tipo === TransactionTypeEnum.CREDIT
+            ? inputDTO.valor
+            : -inputDTO.valor,
+          queryRunner.manager,
+        );
 
-    try {
-      const is404 = await this.cacheManager.get(`${accountId}`);
-      if (is404) {
-        throw new NotFoundException('Cliente não encontrado!');
-      }
+        await this.transactionRepository.saveTransaction(
+          {
+            description: inputDTO.descricao,
+            value: inputDTO.valor,
+            type: inputDTO.tipo,
+            account: account,
+          },
+          queryRunner.manager,
+        );
+        await this.cacheManager.del(`${accountId}_statement`);
 
-      await queryRunner.connect();
-
-      await queryRunner.startTransaction();
-
-      const account = await this.accountRepository.updateBalance(
-        accountId,
-        inputDTO.tipo === TransactionTypeEnum.CREDIT
-          ? inputDTO.valor
-          : -inputDTO.valor,
-        queryRunner.manager,
-      );
-
-      await this.transactionRepository.saveTransaction(
-        {
-          description: inputDTO.descricao,
-          value: inputDTO.valor,
-          type: inputDTO.tipo,
-          account: account,
-        },
-        queryRunner.manager,
-      );
-
-      await queryRunner.commitTransaction();
-
-      await this.cacheManager.del(`${accountId}_statement`);
-
-      return account;
-    } catch (err) {
-      await queryRunner.rollbackTransaction();
-
-      if (err?.constraint == ACCOUNT_CONSTRAINT) {
-        throw new UnprocessableEntityException('Saldo estourou limite!');
-      }
-
-      if (err instanceof NotFoundException) {
-        throw err;
-      }
-
-      throw new HttpException(
-        'Não foi possível realizar operação.',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    } finally {
-      await queryRunner.release();
-    }
+        return account;
+      },
+    );
+    return account;
   }
 }
