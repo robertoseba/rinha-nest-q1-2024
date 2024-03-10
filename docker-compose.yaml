@@ -12,6 +12,8 @@ services:
       - DB_POOL_SIZE=5
       - DB_PORT=5432
       - PORT=3000
+      - REDIS_SERVER=redis
+      - REDIS_PORT=6379
     ports:
       - '3000:3000'
     #   - '9229:9229'
@@ -54,6 +56,18 @@ services:
           cpus: '0.1'
           memory: '24MB'
 
+  redis:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: '10MB'
+
   db:
     image: postgres:latest
     hostname: db
@@ -84,7 +98,7 @@ services:
       resources:
         limits:
           cpus: '0.6'
-          memory: '310MB'
+          memory: '300MB'
     healthcheck:
       test: ['CMD', 'pg_isready', '--username', 'admin', '-d', 'rinha']
       interval: 15s

@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
 
 @Module({
   imports: [
     LoggerModule.forRootAsync({
       inject: [ConfigService],
+      imports: [ConfigModule],
       useFactory: (config: ConfigService) => ({
         pinoHttp: {
           level: config.get('NODE_ENV') === 'production' ? 'error' : 'debug',
