@@ -84,7 +84,7 @@ services:
       resources:
         limits:
           cpus: '0.6'
-          memory: '270MB'
+          memory: '300MB'
     healthcheck:
       test: ['CMD', 'pg_isready', '--username', 'admin', '-d', 'rinha']
       interval: 15s

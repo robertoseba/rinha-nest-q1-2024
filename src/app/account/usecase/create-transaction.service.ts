@@ -9,73 +9,31 @@ import {
 } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { DataSource } from 'typeorm';
-import { ACCOUNT_CONSTRAINT, Account } from './entity/account.entity';
-import { TransactionTypeEnum } from './entity/transaction.entity';
+import { ACCOUNT_CONSTRAINT, Account } from '../entity/account.entity';
+import { TransactionTypeEnum } from '../entity/transaction.entity';
 import {
   ACCOUNT_REPOSITORY,
   IAccountRepository,
-} from './repository/account.repository';
+} from '../repository/account.repository';
 import {
   ITransactionRepository,
   TRANSACTION_REPOSITORY,
-} from './repository/transaction.respository';
-import { TStatement } from './type/statement.type';
-import { TInputTransaction, TTransaction } from './type/transaction.type';
+} from '../repository/transaction.respository';
+import { TInputTransaction } from '../type/transaction.type';
 
 @Injectable()
-export class AccountService {
+export class CreateTransactionService {
   constructor(
     @Inject(ACCOUNT_REPOSITORY)
     private readonly accountRepository: IAccountRepository,
     @Inject(TRANSACTION_REPOSITORY)
     private readonly transactionRepository: ITransactionRepository,
+    // infra
     private readonly dataSource: DataSource,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
-  async getStatement(accountId: number): Promise<TStatement> {
-    const is404 = await this.cacheManager.get(`${accountId}`);
-    if (is404) {
-      throw new NotFoundException('Cliente não encontrado!');
-    }
-
-    const promiseAccount = this.accountRepository.getById(accountId);
-
-    const promiseTransaction =
-      this.transactionRepository.getLastTransactionsBy(accountId);
-
-    const [account, lastTransactions] = await Promise.all([
-      promiseAccount,
-      promiseTransaction,
-    ]);
-
-    if (!account) {
-      await this.cacheManager.set(`accountId`, 1, 0);
-      throw new NotFoundException('Cliente não encontrado!');
-    }
-
-    const returnTransactions: TTransaction[] = lastTransactions.map(
-      (transaction) => {
-        return {
-          valor: transaction.value,
-          tipo: transaction.type,
-          descricao: transaction.description,
-          realizada_em: transaction.createdAt,
-        };
-      },
-    );
-
-    return {
-      saldo: {
-        total: account.balance,
-        data_extrato: new Date(),
-        limite: account.limit,
-      },
-      ultimas_transacoes: returnTransactions,
-    };
-  }
-
-  async createTransaction(
+  async execute(
     accountId: number,
     inputDTO: TInputTransaction,
   ): Promise<Account> {
@@ -91,13 +49,11 @@ export class AccountService {
 
       await queryRunner.startTransaction();
 
-      if (inputDTO.tipo === TransactionTypeEnum.DEBIT) {
-        inputDTO.valor = inputDTO.valor * -1;
-      }
-
       const account = await this.accountRepository.updateBalance(
         accountId,
-        inputDTO.valor,
+        inputDTO.tipo === TransactionTypeEnum.CREDIT
+          ? inputDTO.valor
+          : -inputDTO.valor,
         queryRunner.manager,
       );
 
