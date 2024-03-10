@@ -13,6 +13,7 @@ export function CheckCache(): MethodDecorator {
     descriptor: PropertyDescriptor,
   ): void {
     injector(target, 'cacheManager');
+
     const method = descriptor.value;
 
     descriptor.value = async function wrapper(...args: any[]) {
