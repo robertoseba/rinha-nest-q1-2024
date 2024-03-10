@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { QueryRunner } from 'typeorm';
 import { DatabaseService } from '../../../infra/db/database.service';
 import { NotFoundCache } from '../decorator/not-found-cache.decorator';
-import { ResetStatementCache } from '../decorator/reset-statement.decorator';
 import { Account } from '../entity/account.entity';
 import { TransactionTypeEnum } from '../entity/transaction.entity';
 import {
@@ -28,7 +27,6 @@ export class CreateTransactionService {
   ) {}
 
   @NotFoundCache()
-  @ResetStatementCache()
   async execute(
     accountId: number,
     inputDTO: TInputTransaction,

@@ -2,7 +2,6 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { NotFoundCache } from '../decorator/not-found-cache.decorator';
-import { StatementCache } from '../decorator/statement-cache.decorator';
 import { Transaction } from '../entity/transaction.entity';
 import {
   ACCOUNT_REPOSITORY,
@@ -26,7 +25,6 @@ export class GetStatementService {
   ) {}
 
   @NotFoundCache()
-  @StatementCache()
   async execute(accountId: number): Promise<TStatement> {
     const promiseAccount = this.accountRepository.getById(accountId);
 

@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   api01: &api
-    image: robertoseba/rinha_nest
+    image: robertoseba940/rinha_backend:latest
     hostname: api01
     environment:
       - DB_HOSTNAME=db
@@ -23,7 +23,7 @@ services:
       resources:
         limits:
           cpus: '0.4'
-          memory: '103MB'
+          memory: '105MB'
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://api01:3000/clientes/1/extrato']
       interval: 2s
@@ -54,19 +54,7 @@ services:
       resources:
         limits:
           cpus: '0.1'
-          memory: '14MB'
-
-  redis:
-    image: redis:6.2-alpine
-    restart: always
-    ports:
-      - '6379:6379'
-    command: redis-server --save 20 1 --loglevel warning
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: '10MB'
+          memory: '20MB'
 
   db:
     image: postgres:latest
