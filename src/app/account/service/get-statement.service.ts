@@ -12,7 +12,8 @@ import {
 } from '../repository/transaction.respository';
 import { TStatement } from '../type/statement.type';
 import { TTransaction } from '../type/transaction.type';
-import { CheckCache } from './cache.decorator';
+import { NotFoundCache } from './not-found-cache.decorator';
+import { StatementCache } from './statement-cache.decorator';
 
 @Injectable()
 export class getStatementService {
@@ -24,7 +25,8 @@ export class getStatementService {
     private readonly transactionRepository: ITransactionRepository,
   ) {}
 
-  @CheckCache()
+  @NotFoundCache()
+  @StatementCache()
   async execute(accountId: number): Promise<TStatement> {
     const promiseAccount = this.accountRepository.getById(accountId);
 

@@ -4,7 +4,7 @@ import { Cache } from 'cache-manager';
 
 const CACHE_EXPIRATION_MS = 0;
 
-export function CheckCache(): MethodDecorator {
+export function NotFoundCache(): MethodDecorator {
   const injector = Inject(CACHE_MANAGER);
 
   return function decorator(

@@ -20,7 +20,7 @@ import {
   TRANSACTION_REPOSITORY,
 } from '../repository/transaction.respository';
 import { TInputTransaction } from '../type/transaction.type';
-import { CheckCache } from './cache.decorator';
+import { NotFoundCache } from './not-found-cache.decorator';
 
 @Injectable()
 export class CreateTransactionService {
@@ -34,7 +34,7 @@ export class CreateTransactionService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
-  @CheckCache()
+  @NotFoundCache()
   async execute(
     accountId: number,
     inputDTO: TInputTransaction,
@@ -70,6 +70,9 @@ export class CreateTransactionService {
       );
 
       await queryRunner.commitTransaction();
+
+      await this.cacheManager.del(`${accountId}_statement`);
+
       return account;
     } catch (err) {
       await queryRunner.rollbackTransaction();
@@ -79,7 +82,6 @@ export class CreateTransactionService {
       }
 
       if (err instanceof NotFoundException) {
-        await this.cacheManager.set(`${accountId}`, 0, 0);
         throw err;
       }
 
