@@ -16,7 +16,7 @@ import { NotFoundCache } from './not-found-cache.decorator';
 import { StatementCache } from './statement-cache.decorator';
 
 @Injectable()
-export class getStatementService {
+export class GetStatementService {
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @Inject(ACCOUNT_REPOSITORY)

@@ -1,11 +1,11 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { AccountValidationPipe } from './account-validation.pipe';
-import { getStatementService } from './service/get-statement.service';
+import { GetStatementService } from './service/get-statement.service';
 import { TStatement } from './type/statement.type';
 
 @Controller()
 export class AccountController {
-  constructor(private readonly service: getStatementService) {}
+  constructor(private readonly service: GetStatementService) {}
 
   @Get('/clientes/:id/extrato')
   async getStatement(

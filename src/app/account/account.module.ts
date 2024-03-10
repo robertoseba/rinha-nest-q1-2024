@@ -9,7 +9,7 @@ import { Transaction } from './entity/transaction.entity';
 import { ACCOUNT_REPOSITORY } from './repository/account.repository';
 import { TRANSACTION_REPOSITORY } from './repository/transaction.respository';
 import { CreateTransactionService } from './service/create-transaction.service';
-import { getStatementService } from './service/get-statement.service';
+import { GetStatementService } from './service/get-statement.service';
 import { TransactionController } from './transaction.controller';
 
 @Module({
@@ -17,7 +17,7 @@ import { TransactionController } from './transaction.controller';
   controllers: [AccountController, TransactionController],
   providers: [
     DatabaseService,
-    getStatementService,
+    GetStatementService,
     CreateTransactionService,
     {
       provide: ACCOUNT_REPOSITORY,

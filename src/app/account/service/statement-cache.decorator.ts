@@ -5,6 +5,9 @@ import { TStatement } from '../type/statement.type';
 
 const CACHE_EXPIRATION_MS = 0;
 
+/**
+  Caches the statement for a given account ID.
+ */
 export function StatementCache(): MethodDecorator {
   const injector = Inject(CACHE_MANAGER);
 

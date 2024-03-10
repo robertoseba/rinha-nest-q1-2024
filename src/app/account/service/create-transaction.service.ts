@@ -15,6 +15,7 @@ import {
 } from '../repository/transaction.respository';
 import { TInputTransaction } from '../type/transaction.type';
 import { NotFoundCache } from './not-found-cache.decorator';
+import { ResetStatementCache } from './reset-statement.decorator';
 
 @Injectable()
 export class CreateTransactionService {
@@ -29,6 +30,7 @@ export class CreateTransactionService {
   ) {}
 
   @NotFoundCache()
+  @ResetStatementCache()
   async execute(
     accountId: number,
     inputDTO: TInputTransaction,
@@ -57,7 +59,6 @@ export class CreateTransactionService {
       },
     );
 
-    await this.cacheManager.del(`${accountId}_statement`);
     return account;
   }
 }

@@ -4,6 +4,10 @@ import { Cache } from 'cache-manager';
 
 const CACHE_EXPIRATION_MS = 0;
 
+/**
+ * A cache decorator that handles NotFound exceptions
+ * by caching the result for CACHE_EXPIRATION_MS.
+ */
 export function NotFoundCache(): MethodDecorator {
   const injector = Inject(CACHE_MANAGER);
 
