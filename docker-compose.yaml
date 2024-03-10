@@ -52,7 +52,7 @@ services:
       resources:
         limits:
           cpus: '0.1'
-          memory: '34MB'
+          memory: '24MB'
 
   db:
     image: postgres:latest
@@ -84,7 +84,7 @@ services:
       resources:
         limits:
           cpus: '0.6'
-          memory: '300MB'
+          memory: '310MB'
     healthcheck:
       test: ['CMD', 'pg_isready', '--username', 'admin', '-d', 'rinha']
       interval: 15s

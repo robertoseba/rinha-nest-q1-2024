@@ -1,7 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { AccountValidationPipe } from '../common/pipes/account-validation.pipe';
+import { getStatementService } from './service/get-statement.service';
 import { TStatement } from './type/statement.type';
-import { getStatementService } from './usecase/get-statement.service';
 
 @Controller()
 export class AccountController {

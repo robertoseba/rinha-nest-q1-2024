@@ -7,9 +7,9 @@ import { Account } from './entity/account.entity';
 import { Transaction } from './entity/transaction.entity';
 import { ACCOUNT_REPOSITORY } from './repository/account.repository';
 import { TRANSACTION_REPOSITORY } from './repository/transaction.respository';
+import { CreateTransactionService } from './service/create-transaction.service';
+import { getStatementService } from './service/get-statement.service';
 import { TransactionController } from './transaction.controller';
-import { CreateTransactionService } from './usecase/create-transaction.service';
-import { getStatementService } from './usecase/get-statement.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Account, Transaction])],
