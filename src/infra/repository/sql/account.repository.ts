@@ -34,7 +34,8 @@ export class AccountRepositorySql implements IAccountRepository {
     const repo = manager?.getRepository(Account) ?? this.repo;
 
     try {
-      await repo.query(`SELECT pg_advisory_xact_lock($1);`, [accountId]);
+      // This update locks the row for the transaction. Also a constraint set in the table
+      // garantees that negative balance is not less than the limit set for that.
 
       const account: Account | undefined = (
         await repo.query(
